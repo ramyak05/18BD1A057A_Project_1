@@ -2,7 +2,7 @@ var express= require("express");
 var app=express();
 
 //body-parser middleware  
-const bodyParser=require('body-parser'); //will pass whatever is there in our body
+const bodyParser=require('body-parser'); 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
@@ -15,7 +15,7 @@ const dbName='hospital';
 
 let db
 MongoClient.connect(url,{
-    useUnifiedTopology: true},(err,client)=>{                                      //useUnifiedTopology: constructor enabling
+    useUnifiedTopology: true},(err,client)=>{                   //useUnifiedTopology: constructor enabling
     if(err)
     return log.console(err);
     db=client.db(dbName);
@@ -24,9 +24,9 @@ MongoClient.connect(url,{
 });
 
 //fetch hospital data
-app.get('/getHospitalData',middleware.checkToken,(req,res)=>{    //function
+app.get('/getHospitalData',middleware.checkToken,(req,res)=>{    
     console.log("Fetching Hospital Data");
-    db.collection('hospital').find().toArray().then(result=> res.json(result));  //return as response in json format
+    db.collection('hospital').find().toArray().then(result=> res.json(result));  
 });
 
 //fetch ventilators data
@@ -39,7 +39,7 @@ app.get('/getVentilatorData',middleware.checkToken,(req,res)=>{
 app.post('/searchStatus',middleware.checkToken,(req,res)=>{
     var status=req.body.status;     //industry standard
     console.log(status);
-    db.collection('ventilators').find({status:status}).toArray().then(result=> res.json(result));   //post: go to body, json format and then give {"status":___}
+    db.collection('ventilators').find({status:status}).toArray().then(result=> res.json(result));  
 });
 
 //fetch ventilators by Hospital Name
@@ -47,19 +47,14 @@ app.post('/searchHospitalName',middleware.checkToken,(req,res)=>{
     //var name=req.query.name;
     var name=req.body.name;
     console.log(name);
-    db.collection('ventilators').find({'Name': new RegExp(name,'i')}).toArray().then(result=> res.json(result));   //post: http://localhost:3000/searchHospitalName?name=Apollo%20Hospitals where %20 is space
-    //we use regular expression because if the user just gives a part of the name, then for matching
+    db.collection('ventilators').find({'Name': new RegExp(name,'i')}).toArray().then(result=> res.json(result));   
 });
-
-//req.body holds parameters that are sent up from the client as part of a POST request. 
-//req. query contains the URL query parameters (after the ? in the URL)
 
 //search hospital
 app.post('/searchHospital',middleware.checkToken,(req,res)=>{
     var name=req.query.name;
     console.log(name);
-    db.collection('hospital').find({'Name': new RegExp(name,'i')}).toArray().then(result=> res.json(result));   //post: http://localhost:3000/searchHospitalName?name=Apollo%20Hospitals where %20 is space
-    //we use regular expression because if the user just gives a part of the name, then for matching
+    db.collection('hospital').find({'Name': new RegExp(name,'i')}).toArray().then(result=> res.json(result));   
 });
 
 //update ventilator
